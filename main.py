@@ -1,17 +1,20 @@
 from ollama import chat
 from ollama import ChatResponse
 
-response: ChatResponse = chat(model='deepseek-r1:1.5b', messages=[
-  {
-      'role': 'system',
-      'content': 'You are a productivity assistant. Help the user organize their day by structuring tasks into a clear plan with priorities and time blocks.'
-    },
-    {
-      'role': 'user',
-      'content': 'I have to study machine learning, answer emails, go to the gym, and buy groceries. Help me structure my day.'
-    }
-  ]
+system_prompt = (
+    "You are a productivity assistant. Ask the user for missing details only if needed. "
+    "Then produce: (1) prioritized task list, (2) time-blocked schedule, (3) next actions."
 )
-print(response['message']['content'])
-# or access fields directly from the response object
+
+user_tasks = input("Enter your tasks for today (you can paste a list):\n> ")
+
+response: ChatResponse = chat(
+    model="deepseek-r1:1.5b",
+    messages=[
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_tasks},
+    ],
+)
+
 print(response.message.content)
+
